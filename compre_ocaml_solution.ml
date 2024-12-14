@@ -3,7 +3,7 @@
 - For a 4 marks question, every mistake will lead to 2 marks deduction (so two mistakes will lead to 0 marks).
 - For a 6 marks question, every mistake will lead to 2 marks deduction (so three mistakes will lead to 0 marks).
 - If you have used the standard List notation (e.g. `[]` for empty, `x::xs` for separating head and tail, etc.), 2 marks will be deducated for each such mistake.
-- If you have defined a local helper function without `let` and `in`, 2 marks will be deducated for each such mistake.
+- If you have defined a local helper function without `let` and `in`, 2 marks will be deducated for each such mistake. (I am not sure if there is any other way of definining a local helper function in OCaml. Just using `let` without `in` is wrong. If you think otherwise, you may try compiling such code and let me know if it works for you.)
 - If you have defined any additional helper function in global scope, then no marks will be given for that question.
 - If you have modified any function signature (arguments or return types), then no marks will be given for that question.
 - If you have used any built-in list functions (e.g. `List.map`, `List.filter`, etc.), then no marks will be given for that question.
