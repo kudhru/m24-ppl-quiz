@@ -1,3 +1,7 @@
+(* Rubric for Part B 
+- 
+*)
+
 (* 
 PART B: Train Reservation System
    You are tasked with implementing a train reservation system using a custom recursive list 
