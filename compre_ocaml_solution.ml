@@ -1,5 +1,12 @@
-(* Rubric for Part B 
-- 
+(* Some general points for Part B 
+- For a 3 marks question, every mistake will lead to 2 marks deduction (so two mistakes will lead to 0 marks).
+- For a 4 marks question, every mistake will lead to 2 marks deduction (so two mistakes will lead to 0 marks).
+- For a 6 marks question, every mistake will lead to 2 marks deduction (so three mistakes will lead to 0 marks).
+- If you have used the standard List notation (e.g. `[]` for empty, `x::xs` for separating head and tail, etc.), 2 marks will be deducated for each such mistake.
+- If you have defined a local helper function without `let` and `in`, 2 marks will be deducated for each such mistake.
+- If you have defined any additional helper function in global scope, then no marks will be given for that question.
+- If you have modified any function signature (arguments or return types), then no marks will be given for that question.
+- If you have used any built-in list functions (e.g. `List.map`, `List.filter`, etc.), then no marks will be given for that question.
 *)
 
 (* 
@@ -46,7 +53,7 @@ type booking = {user_name: string; train_number: string; class_booked: seat_clas
 2. Passengers are not alloted any seat numbers. We will just use the seat class and check seat availability to book tickets. While cancelling tickets, we will accordingly update the seat availability.
 *)
 
-(** QUESTION 1: Implement my_map 
+(** QUESTION 1: Implement my_map [3 marks]
     This function applies a function to each element of a list to create a new list
     Input:
     - f: function of type ('a -> 'b) to apply to each element
@@ -64,7 +71,7 @@ let rec my_map (f: 'a -> 'b) (lst: 'a my_list) : 'b my_list =
   | Empty -> Empty
   | Node(x, rest) -> Node(f x, my_map f rest)
 
-(** QUESTION 2: Implement my_filter
+(** QUESTION 2: Implement my_filter [4 marks]
     This function returns only those elements in a my_list that satisfy a given condition
     Input:
     - f: function of type ('a -> bool) that tests each element
@@ -82,7 +89,7 @@ let rec my_filter (f: 'a -> bool) (lst: 'a my_list) : 'a my_list =
   | Empty -> Empty
   | Node(x, rest) -> if f x then Node(x, my_filter f rest) else my_filter f rest
 
-(** QUESTION 3: Implement my_length
+(** QUESTION 3: Implement my_length [3 marks]
     This function counts the number of elements in a list
     Input:
     - lst: input list of type 'a my_list
@@ -99,7 +106,7 @@ let rec my_length (lst: 'a my_list) : int =
   | Empty -> 0
   | Node(_, rest) -> 1 + my_length rest
 
-(** QUESTION 4: Implement my_fold_left
+(** QUESTION 4: Implement my_fold_left [4 marks]
     This function combines all elements of a list using an accumulator function
     Input:
     - f: function of type ('a -> 'b -> 'a) that combines accumulator with each element
@@ -118,7 +125,7 @@ let rec my_fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (lst: 'b my_list) : 'a =
   | Empty -> acc
   | Node(x, rest) -> my_fold_left f (f acc x) rest
 
-(** QUESTION 5: Implement insert_sorted
+(** QUESTION 5: Implement insert_sorted [4 marks]
     This function inserts an element into a sorted list while maintaining ascending order
     Input:
     - cmp: comparison function of type ('a -> 'a -> int) that returns:
@@ -140,7 +147,7 @@ let rec insert_sorted (cmp: 'a -> 'a -> int) (x: 'a) (lst: 'a my_list) : 'a my_l
   | Empty -> Node(x, Empty)
   | Node(y, rest) -> if cmp x y < 0 then Node(x, Node(y, rest)) else Node(y, insert_sorted cmp x rest)
 
-(** QUESTION 6: Implement my_sort
+(** QUESTION 6: Implement my_sort [4 marks]
     This function sorts a list in ascending order using a comparison function
     Input:
     - cmp: comparison function of type ('a -> 'a -> int) that returns:
@@ -165,7 +172,7 @@ let rec my_sort (cmp: 'a -> 'a -> int) (lst: 'a my_list) : 'a my_list =
 
 
   
-  (** QUESTION 7: Implement my_mem
+  (** QUESTION 7: Implement my_mem [4 marks]
     This function checks if an element exists in a list
     Input:
     - x: element to search for
@@ -183,7 +190,7 @@ let rec my_mem (x: 'a) (lst: 'a my_list) : bool =
   | Empty -> false
   | Node(y, rest) -> x=y || my_mem x rest
 
-(** QUESTION 8: Implement sort_trains_by_class
+(** QUESTION 8: Implement sort_trains_by_class [6 marks]
     This function sorts trains based on price or seat availability
     Input:
     - trains: list of trains to sort
@@ -211,7 +218,7 @@ let sort_trains_by_class (trains: train my_list) (class_type: seat_class)
   | "available_seats" -> my_sort (fun t1 t2 -> compare (extract_compare_value t1).available_seats (extract_compare_value t2).available_seats) trains
   | _ -> failwith "Invalid sort criterion"
 
-(** QUESTION 9: Implement check_seat_availability
+(** QUESTION 9: Implement check_seat_availability [6 marks]
     This function verifies if requested number of seats are available
     Input:
     - train: train to check
@@ -232,7 +239,7 @@ let check_seat_availability (train: train) (class_type: seat_class)
   | Node(y, _) -> y.available_seats >= num_passengers
   | Empty -> false
 
-(** QUESTION 10: Implement tatkal_pricing
+(** QUESTION 10: Implement tatkal_pricing [3 marks]
     This function implements dynamic pricing for tatkal (last-minute) tickets
     Input:
     - surcharge: float (e.g., 1.5 for 50% extra charge)
@@ -245,7 +252,7 @@ let check_seat_availability (train: train) (class_type: seat_class)
 let tatkal_pricing (surcharge: float) : (float -> float) = 
   fun base_price -> base_price *. surcharge
 
-(** QUESTION 11: Implement combine_passenger_lists
+(** QUESTION 11: Implement combine_passenger_lists [4 marks]
     This function merges two passenger lists into one
     Input:
     - acc: first passenger list (accumulator)
@@ -266,7 +273,7 @@ let rec combine_passenger_lists (acc: passenger my_list) (p: passenger my_list)
   | Empty -> p
   | Node(x, rest) -> Node(x, combine_passenger_lists rest p)
 
-(** QUESTION 12: Implement get_passengers_for_class
+(** QUESTION 12: Implement get_passengers_for_class [6 marks]
     This function finds all matching passengers in a specific class
     Input:
     - class_type: seat class to search in
@@ -290,7 +297,7 @@ let get_passengers_for_class (class_type: seat_class) (bookings: booking my_list
     else acc
   ) Empty bookings
 
-(** QUESTION 13: Implement search_passengers
+(** QUESTION 13: Implement search_passengers [6 marks]
     This function finds matching passengers across all seat classes
     Input:
     - classes: list of seat classes to search through
@@ -332,7 +339,7 @@ let update_seats (train: train) (class_type: seat_class) (num_seats: int) : trai
     {x with available_seats = x.available_seats + num_seats} else x) train.classes in
   {train with classes = updated_classes}
 
-(** QUESTION 15: Implement book_ticket
+(** QUESTION 15: Implement book_ticket [6 marks]
     This function attempts to create a booking for passengers and accordingly updates the train record
     Input:
     - user_name: name of person making the booking
@@ -358,7 +365,7 @@ let book_ticket (user_name: string) (train: train) (passengers: passenger my_lis
     Some (updated_booking, updated_train)
   else None
 
-(** QUESTION 16: Implement cancel_tickets
+(** QUESTION 16: Implement cancel_tickets [6 marks]
     This function removes specified passengers from a booking
     Input:
     - booking: booking to modify
