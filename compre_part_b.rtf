@@ -1,0 +1,813 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fswiss\fcharset0 Helvetica;\f2\fswiss\fcharset0 Helvetica-BoldOblique;
+\f3\fswiss\fcharset0 Helvetica-Oblique;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww30240\viewh17760\viewkind1
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\qc\partightenfactor0
+
+\f0\b\fs20 \cf0 CS F301 Principles of Programming Languages [1st Semester 2024-2025]
+\f1\b0 \
+
+\f0\b Comprehensive Exam [December 14th, 2024] [Max Marks: 109.5] [Duration: 180 mins]
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\f0\b \ul Part A: Lambda Calculus [Estimated Time: 40 minutes]
+\f1\b0 \ulnone \
+\
+For each of the below mentioned Lambda Calculus expressions, (1) 
+\f0\b \ul Identify the free variables
+\f1\b0 \ulnone  (Write the original expression in the answer sheet and 
+\f0\b underline
+\f1\b0  or 
+\f0\b encircle
+\f1\b0  the free variables in the expression itself) (2) 
+\f0\b \ul Reduce each expression to its Beta Normal Form.
+\f1\b0 \ulnone  (Clearly show each step of the reduction process. Write the intermediate expressions explicitly in each step. If the expression is not reducible to Beta Normal Form, mention the same along with a one line reason.)\
+\
+1. (\uc0\u955 x.\u955 y.\u955 z.x\'a0(\u955 w.wz)\'a0(y\'a0z))\'a0(\u955 z.zz)\'a0(\u955 x.xy)\'a0y     
+\f0\b [9 marks]
+\f1\b0 \
+2. (\uc0\u955 a.\u955 b.a\'a0(b\'a0(\u955 a.aa)))\'a0(\u955 x.xz)\'a0(\u955 y.yy)\'a0(\u955 z.z)       
+\f0\b [7.5 marks]
+\f1\b0 \
+3. (\uc0\u955 x.\u955 y.y\'a0(x\'a0(\u955 z.zw)))\'a0(\u955 z.zz)\'a0(\u955 w.ww)\'a0w             
+\f0\b [9 marks]
+\f1\b0 \
+4. (\uc0\u955 x.\u955 y.x\'a0((\u955 z.zx)\'a0(\u955 x.xz)))\'a0(\u955 a.ab)\'a0(\u955 b.bb)\'a0b       
+\f0\b [9 marks]
+\f1\b0 \
+\
+
+\f0\b \ul PART B: OCaml Programming Language [Estimated time: 140 minutes]
+\f1\b0 \ulnone \
+\
+Implement a train reservation system using a custom recursive list data structure (
+\f0\b my_list
+\f1\b0 ) instead of OCaml's built-in lists. The system should support common operations such as:\
+- Basic list operations (map, filter, fold, sort) for the custom list 
+\f0\b (my_list)
+\f1\b0 \
+- Train sorting\
+- Seat availability checking and booking\
+- Tatkal pricing, Passenger management and searching\
+\
+The required types and data structures are provided. Your task is to
+\f0\b  \ul implement the UNIMPLEMENTED functions according to their specifications.\ulnone  
+\f1\b0 Please note the following:
+\f0\b  \
+
+\f1\b0 - Do not modify the already implemented functions.\
+- Do not change the function signatures (arguments and return types).\
+- Do not use any built-in list functions (like List.map, List.filter, etc.).\
+- Do not add any other functions in the global scope. You are free to add any helper functions within the body of the provided function definitions.\
+- Do not use for and while loops.\
+- You don't need to handle errors.\
+- Minor syntactical errors (; or ;;) will be overlooked. For any other syntactical errors, you may be penalised if it drastically affects the correctness of the code. Final decision will be taken by the instructor.\
+- For each function, we have provided a hint which contains the list of functions you can/should use to implement the function.\
+- You need not strictly follow the hint. But we advice you use the hint and not overthink. \
+- Please take 5-10 minutes to read and understand the full question paper carefully before you start.\
+- Most importantly, do not overthink! There are no tricky questions. Most of the questions are straightforward. All the best!\
+\
+
+\f0\b (* ====================== CODE STARTS HERE ====================== *)
+\f1\b0 \
+
+\f0\b (* Type definitions *)
+\f1\b0 \
+type 'a 
+\f0\b option
+\f1\b0  = None | Some of 'a\
+\
+type 'a 
+\f0\b my_list
+\f1\b0  = Empty | Node of 'a * 'a my_list\
+\
+type 
+\f0\b station
+\f1\b0  = \{code: string; name: string; arrival_time: string; \
+                departure_time: string; distance_from_source: int\}\
+\
+type 
+\f0\b seat_class
+\f1\b0  = Sleeper | AC3 | AC2 | AC1\
+\
+type 
+\f0\b passenger
+\f1\b0  = \{name: string; age: int; gender: string;\}\
+\
+type 
+\f0\b seat_availability
+\f1\b0  = \{class_type: seat_class; price: float; available_seats: int\}\
+\
+type 
+\f0\b train
+\f1\b0  = \{train_number: string; train_name: string; classes: seat_availability my_list; schedule: station my_list; departure_time: string; arrival_time: string\}\
+\
+type 
+\f0\b booking
+\f1\b0  = \{user_name: string; train_number: string; class_booked: seat_class; passengers: passenger my_list; is_tatkal: bool\}\
+\
+(** 
+\f0\b \ul Important Assumptions:\ulnone  
+\f1\b0 For Simplicity, \
+1. Our train reservation system does not have any notion of date. So, whenever we talk about any operation such as 
+\f0\b booking a ticket
+\f1\b0  or 
+\f0\b checking seat availability
+\f1\b0  in a specific train, we do not care about date. In other words, there is only a single instance of any train for which we are going to perform operations. Think of reservation system for just a single day.\
+2. Passengers are not alloted any specific seat numbers. We will just check the seat availability in a specific class in the specific train to book tickets. While cancelling tickets, we will accordingly update the seat availability. 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b (**
+\f1\b0  
+\f0\b \ul QUESTION 1:\ulnone  Implement my_map
+\f1\b0  \
+This function applies a function to each element of a list to create a new list\
+
+\f0\b Input:
+\f1\b0 \
+- f: function of type ('a -> 'b) to apply to each element\
+- lst: input list of type 'a my_list
+\f0\b \
+Returns:
+\f1\b0 \
+- a new list of type 'b my_list containing f applied to each element\
+
+\f0\b Examples:
+\f1\b0 \
+my_map (fun x -> x * 2) (Node(1, Node(2, Node(3, Empty))))\
+(* returns Node(2, Node(4, Node(6, Empty))) because each number is multiplied by 2 *)\
+
+\f0\b Hint:
+\f1\b0  Use pattern matching and recursion 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let rec my_map (f: 'a -> 'b) (lst: 'a my_list) : 'b my_list = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\i\b \cf0   (* QUESTION 1: YOUR CODE HERE  [3 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (**
+\f1\b0  
+\f0\b \ul QUESTION 2:\ulnone  Implement my_filter
+\f1\b0 \
+This function returns only those elements in a my_list that satisfy a given condition\
+
+\f0\b Input:
+\f1\b0 \
+- f: function of type ('a -> bool) that tests each element\
+- lst: input list of type 'a my_list
+\f0\b \
+Returns:
+\f1\b0 \
+- a new list of type \'91a my_list containing only elements for which f returns true\
+
+\f0\b Examples:
+\f1\b0 \
+my_filter (fun x -> x > 2) (Node(1, Node(3, Node(2, Empty))))\
+(* returns Node(3, Empty) because only 3 is greater than 2 *)\
+
+\f0\b Hint:
+\f1\b0  Use pattern matching and recursion 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let rec my_filter (f: 'a -> bool) (lst: 'a my_list) : 'a my_list = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\i\b \cf0   (* QUESTION 2: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (**
+\f1\b0  
+\f0\b \ul QUESTION 3:\ulnone  Implement my_length
+\f1\b0 \
+    This function counts the number of elements in a list\
+    
+\f0\b Input:
+\f1\b0 \
+    - lst: input list of type 'a my_list\
+    
+\f0\b Returns:
+\f1\b0 \
+    - an integer representing the number of elements in the list\
+    
+\f0\b Examples:
+\f1\b0 \
+    my_length (Node(1, Node(2, Node(3, Empty))))\
+    (* returns 3 because there are three elements: 1, 2, and 3 *)\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching and recursion 
+\f0\b *)
+\f1\b0 \
+
+\f0\b let rec my_length (lst: 'a my_list) : int = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\i\b \cf0   (* QUESTION 3: YOUR CODE HERE  [3 marks] *)
+\f0\i0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b0 \cf0 (** 
+\f0\b \ul QUESTION 4:\ulnone  Implement my_fold_left
+\f1\b0 \
+    This function combines all elements of a list using an accumulator function\
+
+\f0\b     Input:
+\f1\b0 \
+    - f: function of type ('a -> 'b -> 'a) that combines accumulator with each element\
+    - acc: initial accumulator value of type 'a\
+    - lst: input list of type 'b my_list\
+\
+    
+\f0\b Returns:
+\f1\b0 \
+    - final accumulator value of type 'a after processing all elements (starting from left of the list)\
+\
+    
+\f0\b Examples:
+\f1\b0 \
+    my_fold_left (fun acc x -> acc ^ x) "" (Node("a", Node("b", Node("c", Empty))))\
+    (* returns "abc" because: "" ^ "a" = "a", then "a" ^ "b" = "ab", then "ab" ^ "c" = "abc" *)\
+\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching and recursion 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let rec my_fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (lst: 'b my_list) : 'a = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 4: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+\
+(** 
+\f0\b \ul QUESTION 5:\ulnone  Implement insert_sorted
+\f1\b0 \
+    This function inserts an element into a sorted list (ascending order) using a comparison function\
+    
+\f0\b Input:
+\f1\b0 \
+    - cmp: comparison function of type ('a -> 'a -> int) that returns:\
+           negative if first arg < second arg\
+           zero if args are equal\
+           positive if first arg > second arg\
+    - x: element to insert\
+    - lst: sorted input list\
+\
+    
+\f0\b Returns:
+\f1\b0 \
+    - a new sorted list with x inserted in the correct position\
+\
+    
+\f0\b Examples:
+\f1\b0 \
+    insert_sorted compare 2 (Node(1, Node(3, Empty)))\
+    (* returns Node(1, Node(2, Node(3, Empty))) because 2 belongs between 1 and 3 *)\
+\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching, recursion, and cmp 
+\f0\b *)
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 \
+let rec insert_sorted (cmp: 'a -> 'a -> int) (x: 'a) (lst: 'a my_list) : 'a my_list = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 5: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+\
+(** 
+\f0\b \ul QUESTION 6:\ulnone  Implement my_sort
+\f1\b0 \
+    This function sorts a list in ascending order using a comparison function\
+    
+\f0\b Input:
+\f1\b0 \
+    - cmp: comparison function of type ('a -> 'a -> int) that returns:\
+           negative if first arg < second arg\
+           zero if args are equal\
+           positive if first arg > second arg\
+    - lst: input list to sort\
+    
+\f0\b Returns:
+\f1\b0 \
+    - a new list with all elements sorted according to the comparison function\
+    
+\f0\b Examples:
+\f1\b0 \
+    my_sort compare (Node(3, Node(1, Node(2, Empty))))\
+    (* returns Node(1, Node(2, Node(3, Empty))) because 1 < 2 < 3 *)\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching, insert_sorted, cmp and recursion 
+\f0\b *)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b0 \cf0 \
+
+\f0\b let rec my_sort (cmp: 'a -> 'a -> int) (lst: 'a my_list) : 'a my_list = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 6: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+(** 
+\f0\b \ul QUESTION 7:\ulnone  Implement my_mem
+\f1\b0 \
+  This function checks if an element exists in a list\
+  
+\f0\b Input:
+\f1\b0 \
+  - x: element to search for\
+  - lst: list to search in\
+  \
+  
+\f0\b Returns:
+\f1\b0 \
+  - true if element exists in list, false otherwise\
+\
+  
+\f0\b Examples:
+\f1\b0 \
+  my_mem 2 (Node(1, Node(2, Node(3, Empty))))\
+  (* returns true because 2 is in the list *)\
+\
+  
+\f0\b Hint:
+\f1\b0  Use pattern matching and recursion 
+\f0\b *)
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 \
+let rec my_mem (x: 'a) (lst: 'a my_list) : bool =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 7: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+\
+(** 
+\f0\b \ul QUESTION 8:\ulnone  Implement sort_trains_by_class
+\f1\b0 \
+    This function sorts trains based on price or seat availability in a specific seat_class\
+    
+\f0\b Input:
+\f1\b0 \
+    - trains: list of trains to sort\
+    - class_type: seat class to compare (Sleeper, AC3, etc.)\
+    - sort_by: string indicating sort criterion ("price" or "available_seats")    \
+    
+\f0\b Returns:
+\f1\b0 \
+    - list of trains sorted in ascending order by the specified criterion\
+\
+    
+\f0\b Examples:
+\f1\b0 \
+    sort_trains_by_class trains Sleeper "price"\
+    (* returns trains sorted by price of Sleeper class *)\
+    sort_trains_by_class trains AC3 "available_seats"\
+    (* returns trains sorted by available seats in AC3 class *)\
+\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching, my_sort, my_filter *)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 let sort_trains_by_class (trains: train my_list) (class_type: seat_class) \
+    (sort_by: string) : train my_list =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 8: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+\
+(** 
+\f0\b \ul QUESTION 9:\ulnone  Implement check_seat_availability
+\f1\b0 \
+    This function verifies if requested number of seats are available in a specific seat_class\
+    
+\f0\b Input:
+\f1\b0 \
+    - train: train to check\
+    - class_type: seat class to check (Sleeper, AC3, etc.)\
+    - num_passengers: number of seats needed\
+   
+\f0\b  Returns:
+\f1\b0 \
+    - true if enough seats are available, false otherwise\
+    
+\f0\b Examples:
+\f1\b0 \
+    check_seat_availability train Sleeper 2\
+    (* returns true if Sleeper class has at least 2 seats available *)\
+    check_seat_availability train AC1 5\
+    (* returns false if AC1 class has less than 5 seats available *)\
+    
+\f0\b Hint:
+\f1\b0  Use pattern matching and my_filter \
+    [Before attempting this question, look at important assumptions mentioned just before question 1] *)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 let check_seat_availability (train: train) (class_type: seat_class) \
+    (num_passengers: int) : bool =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 9: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (**
+\f1\b0  
+\f0\b \ul QUESTION 10:\ulnone  Implement tatkal_pricing
+\f1\b0 \
+    This function implements dynamic pricing for tatkal tickets\
+
+\f0\b     Input:
+\f1\b0 \
+    - surcharge: float (e.g., 1.5 for 50% extra charge)\
+\
+
+\f0\b     Returns:
+\f1\b0 \
+    - a function of type (float -> float) that takes base price as input and calculates tatkal price\
+\
+
+\f0\b     Examples:
+\f1\b0 \
+    let apply_tatkal = tatkal_pricing 1.5 in\
+    apply_tatkal 1000.0;;  (* returns 1500.0 because base_price * surcharge = 1000.0 * 1.5 *)\
+\
+    
+\f0\b Hint:
+\f1\b0  No hints for this question 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let tatkal_pricing (surcharge: float) : (float -> float) = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 10: YOUR CODE HERE  [3 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (**
+\f1\b0  
+\f0\b \ul QUESTION 11:\ulnone  Implement combine_passenger_lists
+\f1\b0 \
+    This function merges two passenger lists into one\
+    
+\f0\b Input:
+\f1\b0 \
+    - acc: first passenger list (accumulator)\
+    - p: second passenger list to add\
+\
+
+\f0\b     Returns:
+\f1\b0 \
+    - a new list containing all passengers from both lists\
+\
+
+\f0\b     Examples:
+\f1\b0 \
+    let p1 = \{name="Alice"; age=25; gender="F";\} in\
+    let p2 = \{name="Bob"; age=30; gender="M";\} in\
+    combine_passenger_lists (Node(p1, Empty)) (Node(p2, Empty))\
+    (* returns Node(p2, Node(p1, Empty)) because it combines both lists *)\
+\
+
+\f0\b     Hint:
+\f1\b0  Use pattern matching and recursion *)\
+\
+
+\f0\b let rec combine_passenger_lists (acc: passenger my_list) (p: passenger my_list) \
+    : passenger my_list = 
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 11: YOUR CODE HERE  [4 marks] *)
+\f1\i0\b0 \
+\
+(** 
+\f0\b \ul QUESTION 12:\ulnone  Implement get_passengers_for_class
+\f1\b0 \
+    This function finds all matching passengers in a specific class across all the bookings (need not necessarily belong to the same train). Passengers should satisfy the matching criteria.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0     Input:
+\f1\b0 \
+    - class_type: seat class to search in\
+    - bookings: list of all bookings to search through\
+    - filter_fn: function of type (passenger -> bool) that defines matching criteria for the passenger\
+
+\f0\b     Returns:
+\f1\b0 \
+    - matching_passenger_list\
+\
+
+\f0\b     Examples:
+\f1\b0 \
+    get_passengers_for_class AC3 bookings (fun p -> p.gender = "F")\
+    (* returns Node(\{name="Alice"; ...\}, Node(\{name="Mary"; ...\}, Empty))\
+       if Alice and Mary are the female passengers in AC3 *)\
+\
+
+\f0\b     Hint:
+\f1\b0  Use my_fold_left, my_filter, and combine_passenger_lists 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let get_passengers_for_class (class_type: seat_class) (bookings: booking my_list)\
+    (filter_fn: passenger -> bool) : passenger my_list =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 12: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+(** 
+\f0\b \ul QUESTION 13:\ulnone  Implement search_passengers
+\f1\b0 \
+    This function finds matching passengers across all seat classes and all bookings. Passengers should satisfy the matching criteria.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0     Input:
+\f1\b0 \
+    - classes: list of seat classes to search through\
+    - bookings: list of all bookings to search through\
+    - filter_fn: function of type (passenger -> bool) that defines matching criteria for the passenger\
+
+\f0\b     Returns:
+\f1\b0 \
+    - list of tuples, each tuple of the type (seat_class * matching_passenger_list)\
+
+\f0\b     Examples:
+\f1\b0 \
+    search_passengers classes bookings (fun p -> p.age > 60)\
+    (* returns Node((Sleeper, Node(\{name="John"; age=65; ...\}, Empty)),\
+                Node((AC2, Node(\{name="Mary"; age=70; ...\}, Empty)), Empty))\
+       if John and Mary are senior citizens in their respective classes *)\
+
+\f0\b     Hint:
+\f1\b0  Use my_fold_left and get_passengers_for_class 
+\f0\b *)
+\f1\b0 \
+
+\f0\b \
+let search_passengers (classes: seat_class my_list) (bookings: booking my_list)\
+    (filter_fn: passenger -> bool) : (seat_class * passenger my_list) my_list =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 13: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (**
+\f1\b0  
+\f0\b \ul QUESTION 14:\ulnone  Implement update_seats
+\f1\b0 \
+    This function modifies the available seats count for a specific class in a specific train
+\f0\b \
+    Input:
+\f1\b0 \
+    - train: train to update\
+    - class_type: seat class to modify\
+    - num_seats: number of seats to add (positive) or remove (negative)
+\f0\b \
+    Returns:
+\f1\b0 \
+    - updated (new) train record with modified seat count
+\f0\b \
+    Examples:
+\f1\b0 \
+    update_seats train Sleeper (-2) (* returns updated train with 2 fewer Sleeper seats available 
+\f0\b *)
+\f1\b0 \
+
+\f0\b     Hint:
+\f1\b0  Use my_map *)
+\f0\b \
+\
+let update_seats (train: train) (class_type: seat_class) (num_seats: int) : train =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 14: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 (** QUESTION 15: Implement book_ticket\
+This function tries to create booking for passengers and accordingly updates the train record\
+    Input:\
+    
+\f1\b0 - user_name: name of person making the booking\
+    - train: train to book tickets on\
+    - passengers: list of passengers to book for\
+    - class_booked: desired seat class\
+    - is_tatkal: whether this is a tatkal booking
+\f0\b \
+    Returns:\
+    
+\f1\b0 - Some (booking_record, updated_train_record) if successful, None if seats not available
+\f0\b \
+\
+    Examples:\
+    
+\f1\b0 book_ticket "Alice" train passengers Sleeper false\
+    (* returns Some (booking_record, updated_train_record) if booking succeeds *)\
+    book_ticket "Bob" train passengers AC1 true\
+    (* returns None if required seats are not available *)
+\f0\b \
+\
+    Hint: 
+\f1\b0 Use check_seat_availability, update_seats and my_length
+\f0\b  \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f1\b0 \cf0     [Before attempting this question, look at important assumptions mentioned just before question 1] 
+\f0\b *)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+let book_ticket (user_name: string) (train: train) (passengers: passenger my_list) class_booked: seat_class) (is_tatkal: bool) : (booking * train) option =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 15: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+(** 
+\f0\b \ul QUESTION 16:\ulnone  Implement cancel_tickets
+\f1\b0 \
+    This function removes specified seats from a specific booking in a specific train\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0     Input:
+\f1\b0 \
+    - booking: booking to modify\
+    - train: train whose seat availability needs to be updated\
+    - passengers_to_cancel: list of passengers whose tickets need to be cancelled\
+\
+
+\f0\b     Returns:
+\f1\b0 \
+    - tuple containing (updated booking * updated train)\
+\
+
+\f0\b     Examples:
+\f1\b0 \
+    cancel_tickets booking train (Node(\{name = "Alice"; age = 25; gender = "F"\}, Empty))\
+    (* returns (booking without Alice, train with 1 more available seat) *)\
+\
+    
+\f0\b Hint:
+\f1\b0  Use my_filter, my_mem, my_length and update_seats\
+    [Before attempting this question, look at important assumptions mentioned just before question 1] 
+\f0\b *)
+\f1\b0 \
+\
+
+\f0\b let cancel_tickets (booking: booking) (train: train) (passengers: passenger my_list) \
+    : booking * train =
+\f1\b0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f3\i \cf0   
+\f2\b (* QUESTION 16: YOUR CODE HERE  [6 marks] *)
+\f1\i0\b0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 \ul \ulc0 (** MAIN FUNCTION - DO NOT MODIFY. YOU DON'T NEED THIS CODE. THIS IS JUST FOR SHOWING HOW THE ABOVE FUNCTIONS WORK. *)\
+
+\f1\b0 \ulnone \
+let main () = \
+  
+\f0\b (* Create test data *)
+\f1\b0 \
+  let train = \{\
+    train_number = "12345"; \
+    train_name = "Express A";\
+    classes = Node (\{class_type = Sleeper; price = 500.0; available_seats = 100\},\
+            Node (\{class_type = AC3; price = 1200.0; available_seats = 50\}, Empty));\
+    schedule = Node (\{ code = "DEL"; name = "Delhi"; arrival_time = "--"; \
+                      departure_time = "10:00"; distance_from_source = 0 \},\
+                    Node (\{ code = "BPL"; name = "Bhopal"; arrival_time = "15:00";\
+                          departure_time = "15:15"; distance_from_source = 700 \}, Empty));\
+    departure_time = "10:00"; \
+    arrival_time = "22:00"\
+  \} in\
+  let trains = Node(train, Empty) in\
+  
+\f0\b (* Test implemented functions *)
+\f1\b0 \
+  assert (my_map (fun x -> x * 2) (Node(1, Node(2, Node(3, Empty)))) = \
+         Node(2, Node(4, Node(6, Empty))));\
+  \
+  assert (my_filter (fun x -> x > 2) (Node(1, Node(3, Node(2, Empty)))) = \
+         Node(3, Empty));\
+  \
+  assert (my_length (Node(1, Node(2, Node(3, Empty)))) = 3);\
+  \
+  assert (my_fold_left (+) 0 (Node(1, Node(2, Node(3, Empty)))) = 6);\
+  \
+  assert (my_sort compare (Node(3, Node(1, Node(2, Empty)))) = \
+         Node(1, Node(2, Node(3, Empty))));\
+\
+  assert (my_mem 2 (Node(1, Node(2, Node(3, Empty)))) = true);\
+  assert (my_mem 4 (Node(1, Node(2, Node(3, Empty)))) = false);\
+\
+  let sorted_trains = sort_trains_by_class trains Sleeper "price" in\
+  assert (my_length sorted_trains = 1);\
+\
+  assert (check_seat_availability train Sleeper 2 = true);\
+  assert (check_seat_availability train Sleeper 101 = false);\
+  \
+  assert ((tatkal_pricing 1.5) 1000.0 = 1500.0);\
+  assert ((tatkal_pricing 2.0) 1000.0 = 2000.0);\
+\
+  let booking = \{\
+    user_name = "Alice"; \
+    train_number = "12345"; \
+    class_booked = Sleeper;\
+    passengers = Node(\{name = "Alice"; age = 25; gender = "F";\},\
+                Node(\{name = "Bob"; age = 30; gender = "M";\}, Empty));\
+    is_tatkal = false\
+  \} in\
+  let bookings = Node(booking, Empty) in\
+\
+  let senior_passengers = get_passengers_for_class Sleeper bookings (fun p -> p.age > 60) in\
+  assert (my_length senior_passengers = 0);\
+  \
+  let combined = combine_passenger_lists \
+    (Node(\{name = "Eve"; age = 40; gender = "F";\}, Empty))\
+    (Node(\{name = "Frank"; age = 45; gender = "M";\}, Empty)) in\
+  assert (my_length combined = 2);\
+\
+  let classes = Node(Sleeper, Node(AC3, Empty)) in\
+  let adult_passengers = search_passengers classes bookings (fun p -> p.age >= 30) in\
+  assert (my_length adult_passengers = 2);\
+\
+  let (updated_booking, updated_train) = cancel_tickets booking train (Node(\{name = "Alice"; age = 25; gender = "F"\}, Empty)) in\
+  assert (my_length updated_booking.passengers = 1);\
+  \
+  let booking_result = book_ticket "Alice" train\
+    (Node(\{name = "Alice"; age = 30; gender = "F";\}, Empty))\
+    Sleeper false in\
+  assert (booking_result <> None);\
+\
+  sorted_trains\
+\
+let () = \
+  try\
+    ignore (main ());\
+    print_endline "All tests passed!"\
+  with Assert_failure (file, line, position) ->\
+    Printf.printf "Test failed at %s, line %d, position %d\\n" file line position\
+
+\f0\b (* ====================== CODE ENDS HERE ====================== *)}
