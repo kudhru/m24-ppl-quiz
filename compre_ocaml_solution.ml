@@ -7,6 +7,10 @@
 - If you have defined any additional helper function in global scope, then no marks will be given for that question.
 - If you have modified any function signature (arguments or return types), then no marks will be given for that question.
 - If you have used any built-in list functions (e.g. `List.map`, `List.filter`, etc.), then no marks will be given for that question.
+- If you have used for or while loops, then no marks will be given for that question.
+- If you have used == for comparison, then 2 marks will be deducted for each such mistake.
+- If you have used `return` for returning a value, then 2 marks will be deducted for each such mistake.
+- The in-line rubrics mentioned with each question are not exhaustive. They are only for the convenience of the TAs.
 *)
 
 (* 
@@ -37,6 +41,7 @@ PART B: Train Reservation System
 (* Type definitions - DO NOT MODIFY *)
 type 'a option = None | Some of 'a
 type 'a my_list = Empty | Node of 'a * 'a my_list
+(* [] is not a valid empty list. *)
 type station = {code: string; name: string; arrival_time: string; 
                 departure_time: string; distance_from_source: int}
 type seat_class = Sleeper | AC3 | AC2 | AC1
@@ -68,8 +73,10 @@ type booking = {user_name: string; train_number: string; class_booked: seat_clas
     Hint: Use pattern matching and recursion *)
 let rec my_map (f: 'a -> 'b) (lst: 'a my_list) : 'b my_list = 
   match lst with 
-  | Empty -> Empty
-  | Node(x, rest) -> Node(f x, my_map f rest)
+  | Empty -> Empty 
+  | Node(x, rest) -> Node(f x, my_map f rest) 
+  (* -2 marks for either [] or x :: rest or both *)
+
 
 (** QUESTION 2: Implement my_filter [4 marks]
     This function returns only those elements in a my_list that satisfy a given condition
@@ -88,6 +95,8 @@ let rec my_filter (f: 'a -> bool) (lst: 'a my_list) : 'a my_list =
   match lst with 
   | Empty -> Empty
   | Node(x, rest) -> if f x then Node(x, my_filter f rest) else my_filter f rest
+  (* -2 marks for either [] or x :: rest or both *)
+  (* 0 if pattern matching is not used *)
 
 (** QUESTION 3: Implement my_length [3 marks]
     This function counts the number of elements in a list
@@ -105,6 +114,9 @@ let rec my_length (lst: 'a my_list) : int =
   match lst with 
   | Empty -> 0
   | Node(_, rest) -> 1 + my_length rest
+  (* -2 marks for either [] or x :: rest or both *)
+  (* 0 if pattern matching is not used *)
+
 
 (** QUESTION 4: Implement my_fold_left [4 marks]
     This function combines all elements of a list using an accumulator function
@@ -124,6 +136,7 @@ let rec my_fold_left (f: 'a -> 'b -> 'a) (acc: 'a) (lst: 'b my_list) : 'a =
   match lst with
   | Empty -> acc
   | Node(x, rest) -> my_fold_left f (f acc x) rest
+
 
 (** QUESTION 5: Implement insert_sorted [4 marks]
     This function inserts an element into a sorted list while maintaining ascending order
@@ -167,7 +180,7 @@ let rec insert_sorted (cmp: 'a -> 'a -> int) (x: 'a) (lst: 'a my_list) : 'a my_l
 let rec my_sort (cmp: 'a -> 'a -> int) (lst: 'a my_list) : 'a my_list = 
   match lst with 
   | Empty -> Empty
-  | Node(x, Empty) -> Node(x, Empty)
+  (* | Node(x, Empty) -> Node(x, Empty) *)
   | Node(x, rest) -> insert_sorted cmp x (my_sort cmp rest)
 
 
@@ -189,6 +202,10 @@ let rec my_mem (x: 'a) (lst: 'a my_list) : bool =
   match lst with 
   | Empty -> false
   | Node(y, rest) -> x=y || my_mem x rest
+  (* -2 marks for either [] or x :: rest or both *)
+  (* 0 if pattern matching is not used *)
+  (* -2 if == is used *)
+  (* Alternate solutiuon: if x = y then true else my_mem x rest *)
 
 (** QUESTION 8: Implement sort_trains_by_class [6 marks]
     This function sorts trains based on price or seat availability
@@ -217,6 +234,11 @@ let sort_trains_by_class (trains: train my_list) (class_type: seat_class)
   | "price" -> my_sort (fun t1 t2 -> compare (extract_compare_value t1).price (extract_compare_value t2).price) trains
   | "available_seats" -> my_sort (fun t1 t2 -> compare (extract_compare_value t1).available_seats (extract_compare_value t2).available_seats) trains
   | _ -> failwith "Invalid sort criterion"
+  (* sort_by can also be compared using if else clause *)
+  (* -2 marks for just using let without in *)
+  (* -2 marks for extracting y (seat_availability record) from Node without pattern matching *)
+  (* -2 marks for using == in self-defined comparison function *)
+
 
 (** QUESTION 9: Implement check_seat_availability [6 marks]
     This function verifies if requested number of seats are available
@@ -238,6 +260,7 @@ let check_seat_availability (train: train) (class_type: seat_class)
   match only_class_info with 
   | Node(y, _) -> y.available_seats >= num_passengers
   | Empty -> false
+  (* -2 marks for extracting y (seat_availability record) from Node without pattern matching *)
 
 (** QUESTION 10: Implement tatkal_pricing [3 marks]
     This function implements dynamic pricing for tatkal (last-minute) tickets
@@ -251,6 +274,9 @@ let check_seat_availability (train: train) (class_type: seat_class)
     Hint: No hints for this question *)
 let tatkal_pricing (surcharge: float) : (float -> float) = 
   fun base_price -> base_price *. surcharge
+  (* Alternate solution: base_price can have any other name but surcharge must be the same *)
+  (* -3 marks for base_price *. surcharge => value return should be given zero marks *)
+
 
 (** QUESTION 11: Implement combine_passenger_lists [4 marks]
     This function merges two passenger lists into one
@@ -296,6 +322,17 @@ let get_passengers_for_class (class_type: seat_class) (bookings: booking my_list
       combine_passenger_lists acc (my_filter filter_fn booking.passengers)
     else acc
   ) Empty bookings
+  (* Alternate solution may have a local recursive function implemented for looping through bookings *)
+  (* let rec helper (acc: passenger my_list) (bookings: booking my_list) : passenger my_list = 
+    match bookings with 
+    | Empty -> acc
+    | Node(x, rest) -> if x.class_booked = class_type then
+      helper (combine_passenger_lists acc (my_filter filter_fn x.passengers)) rest
+    else helper acc rest
+  in helper Empty bookings *)
+  (* -2 marks for using == for comparing class_type *)
+  (* -2 marks for just using let without in *)
+  
 
 (** QUESTION 13: Implement search_passengers [6 marks]
     This function finds matching passengers across all seat classes
@@ -319,8 +356,12 @@ let search_passengers (classes: seat_class my_list) (bookings: booking my_list)
   my_fold_left (fun acc class_type -> 
     Node((class_type, get_passengers_for_class class_type bookings filter_fn), acc)
   ) Empty classes
+  (* -2 marks for just using let without in *)
+  (* -2 marks for using == for comparison *)
+  (* Alternate solution may have a local recursive function implemented for looping through classes *)
 
-(** QUESTION 14: Implement update_seats
+
+(** QUESTION 14: Implement update_seats [6 marks]
     This function modifies the available seats count for a specific class
     Input:
     - train: train to update
@@ -338,6 +379,13 @@ let update_seats (train: train) (class_type: seat_class) (num_seats: int) : trai
   let updated_classes = my_map (fun x -> if x.class_type = class_type then 
     {x with available_seats = x.available_seats + num_seats} else x) train.classes in
   {train with classes = updated_classes}
+  (* Alternate solution may create a new record for updated_train *)
+  (* let updated_classes = my_map (fun x -> if x.class_type = class_type then 
+    {class_type=x.class_type; price=x.price; available_seats=x.available_seats + num_seats} else x) train.classes in
+  {train_number=train.train_number; train_name=train.train_name; classes=updated_classes; 
+    schedule=train.schedule; departure_time=train.departure_time; arrival_time=train.arrival_time} *)
+  (* -2 marks for trying to update the same record *)
+
 
 (** QUESTION 15: Implement book_ticket [6 marks]
     This function attempts to create a booking for passengers and accordingly updates the train record
@@ -364,6 +412,21 @@ let book_ticket (user_name: string) (train: train) (passengers: passenger my_lis
       class_booked = class_booked; passengers = passengers; is_tatkal = is_tatkal} in
     Some (updated_booking, updated_train)
   else None
+  (* Alternate solution may compute length once and use it for both check_seat_availability and update_seats *)
+  (* let length_of_passengers = my_length passengers in
+  if check_seat_availability train class_booked length_of_passengers then
+    let updated_train = update_seats train class_booked (-length_of_passengers) in
+    let updated_booking = {user_name = user_name; train_number = updated_train.train_number; 
+      class_booked = class_booked; passengers = passengers; is_tatkal = is_tatkal} in
+    Some (updated_booking, updated_train)
+  else None *)
+  (* -2 marks for not computing the length properly using my_length *)
+  (* -2 marks for not using check_seat_availability *)
+  (* -2 marks for not using update_seats *)
+  (* -2 marks for not using if and else *)
+  (* -2 marks for not using Some and None *)
+  (* -2 marks for not preparing the tuple of updated_booking and updated_train properly *)
+  (* -2 marks for not using let and in *)
 
 (** QUESTION 16: Implement cancel_tickets [6 marks]
     This function removes specified passengers from a booking
