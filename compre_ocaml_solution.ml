@@ -256,11 +256,16 @@ let sort_trains_by_class (trains: train my_list) (class_type: seat_class)
     Hint: Use pattern matching and my_filter *)
 let check_seat_availability (train: train) (class_type: seat_class) 
     (num_passengers: int) : bool =
-  let only_class_info = my_filter (fun x -> x.class_type = class_type) train.classes in 
+  let only_class_info = my_filter (fun x -> x.class_type = class_type) train.classes in
+   (* Node(class_record, Empty)  *)
   match only_class_info with 
   | Node(y, _) -> y.available_seats >= num_passengers
   | Empty -> false
   (* -2 marks for extracting y (seat_availability record) from Node without pattern matching *)
+  (* -2 marks for using == for comparison *)
+  (* -2 marks for not using let and in *)
+  (* -2 marks for directly trying to access the seat_class record from Node *)
+
 
 (** QUESTION 10: Implement tatkal_pricing [3 marks]
     This function implements dynamic pricing for tatkal (last-minute) tickets
@@ -297,7 +302,7 @@ let rec combine_passenger_lists (acc: passenger my_list) (p: passenger my_list)
     : passenger my_list = 
   match acc with 
   | Empty -> p
-  | Node(x, rest) -> Node(x, combine_passenger_lists rest p)
+  | Node(head, tail) -> Node(head, combine_passenger_lists tail p)
 
 (** QUESTION 12: Implement get_passengers_for_class [6 marks]
     This function finds all matching passengers in a specific class
